@@ -10,11 +10,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('register', [AuthController::class, 'register'])->middleware('web');
+Route::post('/register', [AuthController::class, 'register'])->middleware('web');
 Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::post('/email/verify/{id}/{hash}', [AuthController::class, 'emailVerify'])->name('verification.verify');
 Route::post('/resend-email-verify', [AuthController::class, 'resendEmailVerificationMail'])->middleware('auth:sanctum');
+
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('web');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('web')->name('password.reset');
 
 Route::apiResource('profile', ProfileController::class);

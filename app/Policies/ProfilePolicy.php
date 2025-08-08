@@ -10,6 +10,6 @@ class ProfilePolicy
 {
     public function updateprofile(User $user, Profile $profile): Response
     {
-        return $user->id === $profile->user_id ? Response::allow() : Response::deny('You do not own this profile');
+        return $user->id === $profile->user_id ? Response::allow() : Response::deny('You do not own this profile.');
     }
 }

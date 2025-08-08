@@ -7,6 +7,7 @@ use App\Http\Requests\StoreClassroomRequest;
 use App\Http\Requests\UpdateClassroomRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Str;
 
 class ClassroomController extends Controller implements HasMiddleware
 {
@@ -29,7 +30,15 @@ class ClassroomController extends Controller implements HasMiddleware
      */
     public function store(StoreClassroomRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $classroom = Classroom::create([
+            'name'        => $data['name'],
+            'description' => $data['description'] ?? null,
+            'class_code'  => Str::random(6)
+        ]);
+
+        return response()->json($classroom, 201);
     }
 
     /**
@@ -37,7 +46,7 @@ class ClassroomController extends Controller implements HasMiddleware
      */
     public function show(Classroom $classroom)
     {
-        //
+
     }
 
     /**

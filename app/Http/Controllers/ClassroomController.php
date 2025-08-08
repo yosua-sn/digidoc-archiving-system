@@ -56,7 +56,7 @@ class ClassroomController extends Controller implements HasMiddleware
      */
     public function update(UpdateClassroomRequest $request, Classroom $classroom)
     {
-        Gate::authorize('updateclassroom', $classroom);
+        Gate::authorize('modifyclassroom', $classroom);
         $data = $request->validated();
 
         $classroom->update($data);
@@ -72,6 +72,12 @@ class ClassroomController extends Controller implements HasMiddleware
      */
     public function destroy(Classroom $classroom)
     {
-        //
+        Gate::authorize('modifyclassroom', $classroom);
+
+        $classroom->delete();
+
+        return response()->json([
+            'message' => 'Classroom delete successfully.'
+        ]);
     }
 }

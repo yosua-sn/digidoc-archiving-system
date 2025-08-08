@@ -56,7 +56,15 @@ class ClassroomController extends Controller implements HasMiddleware
      */
     public function update(UpdateClassroomRequest $request, Classroom $classroom)
     {
-        //
+        Gate::authorize('updateclassroom', $classroom);
+        $data = $request->validated();
+
+        $classroom->update($data);
+
+        return response()->json([
+            'message' => 'Update classroom successfully.',
+            'update' => $classroom
+        ], 200);
     }
 
     /**

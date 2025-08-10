@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateClassroomRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ClassroomController extends Controller implements HasMiddleware
@@ -18,58 +19,68 @@ class ClassroomController extends Controller implements HasMiddleware
             new Middleware('auth:sanctum')
         ];
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        if ($user->role === 'teacher') {
+            $classrooms = $user->classrooms()
+                ->withCount('students')
+                ->latest()
+                ->get();
+        } else {
+            $classrooms = $user->joinedClassrooms()
+                ->with('teacher:id,name')
+                ->withCount('students')
+                ->latest()
+                ->get();
+        }
+
+        return response()->json($classrooms);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreClassroomRequest $request)
     {
         Gate::authorize('createclassroom');
+
         $data = $request->validated();
 
         $classroom = Classroom::create([
             'name'        => $data['name'],
             'description' => $data['description'] ?? null,
-            'code'  => Str::random(6)
+            'code'        => Str::upper(Str::random(6)),
+            'created_by'  => Auth::id()
         ]);
 
-        return response()->json($classroom, 201);
+        return response()->json([
+            'message'   => 'Classroom created successfully.',
+            'classroom' => $classroom
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Classroom $classroom)
+    public function show(string $code)
     {
+        $classroom = Classroom::where('code', $code)
+            ->with('teacher:id,name')
+            ->withCount('students')
+            ->firstOrFail();
 
+        return response()->json($classroom);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateClassroomRequest $request, Classroom $classroom)
     {
         Gate::authorize('modifyclassroom', $classroom);
-        $data = $request->validated();
 
-        $classroom->update($data);
+        $classroom->update($request->validated());
 
         return response()->json([
-            'message' => 'Update classroom successfully.',
-            'update' => $classroom
-        ], 200);
+            'message' => 'Classroom updated successfully.',
+            'classroom' => $classroom
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Classroom $classroom)
     {
         Gate::authorize('modifyclassroom', $classroom);
@@ -77,7 +88,7 @@ class ClassroomController extends Controller implements HasMiddleware
         $classroom->delete();
 
         return response()->json([
-            'message' => 'Classroom delete successfully.'
+            'message' => 'Classroom deleted successfully.'
         ]);
     }
 }

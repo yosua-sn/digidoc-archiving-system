@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -56,8 +58,13 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function classroom(){
-        return $this->hasMany(Classroom::class);
+    public function classrooms(): HasMany {
+        return $this->hasMany(Classroom::class, 'created_by');
+    }
+
+    public function joinedClassrooms(): BelongsToMany {
+        return $this->belongsToMany(Classroom::class, 'classroom_student', 'student_id', 'classroom_id')
+            ->withTimestamps();
     }
 
     protected static function booted(){

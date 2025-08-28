@@ -29,6 +29,7 @@ class AuthController extends Controller
                     ->symbols()
                     ->uncompromised(),
             ],
+            'role' => 'required'
         ]);
 
         $user = User::create($fields);

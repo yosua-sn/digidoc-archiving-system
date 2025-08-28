@@ -42,7 +42,7 @@ class ClassroomController extends Controller implements HasMiddleware
 
     public function store(StoreClassroomRequest $request)
     {
-        Gate::authorize('createclassroom');
+        Gate::authorize('create', Classroom::class);
 
         $data = $request->validated();
 
@@ -71,7 +71,7 @@ class ClassroomController extends Controller implements HasMiddleware
 
     public function update(UpdateClassroomRequest $request, Classroom $classroom)
     {
-        Gate::authorize('modifyclassroom', $classroom);
+        Gate::authorize('modify', $classroom);
 
         $classroom->update($request->validated());
 
@@ -83,7 +83,7 @@ class ClassroomController extends Controller implements HasMiddleware
 
     public function destroy(Classroom $classroom)
     {
-        Gate::authorize('modifyclassroom', $classroom);
+        Gate::authorize('modify', $classroom);
 
         $classroom->delete();
 

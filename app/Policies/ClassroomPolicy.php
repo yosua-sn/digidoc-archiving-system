@@ -8,12 +8,14 @@ use Illuminate\Auth\Access\Response;
 
 class ClassroomPolicy
 {
-    public function createclassroom(User $user): bool
+    public function create(User $user): Response
     {
-        return $user->role === 'teacher';
+        return $user->role === 'teacher'
+            ? Response::allow()
+            : Response::deny('You are not a teacher.');
     }
 
-    public function modifyclassroom(User $user, Classroom $classroom): Response
+    public function modify(User $user, Classroom $classroom): Response
     {
         return $user->id === $classroom->created_by
             ? Response::allow()

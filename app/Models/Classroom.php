@@ -15,7 +15,8 @@ class Classroom extends Model
     protected $fillable = [
         'name',
         'description',
-        'code'
+        'code',
+        'created_by'
     ];
 
     public function teacher(): BelongsTo {

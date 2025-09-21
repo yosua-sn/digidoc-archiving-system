@@ -59,15 +59,6 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function classrooms(): HasMany {
-        return $this->hasMany(Classroom::class, 'created_by');
-    }
-
-    public function joinedClassrooms(): BelongsToMany {
-        return $this->belongsToMany(Classroom::class, 'classroom_student', 'student_id', 'classroom_id')
-            ->withTimestamps();
-    }
-
     protected static function booted(){
         static::created(function ($user) {
             $user->profile()->create();

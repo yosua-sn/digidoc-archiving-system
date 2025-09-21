@@ -22,4 +22,5 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->midd
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('web')->name('password.reset');
 
 Route::apiResource('profile', ProfileController::class);
-Route::apiResource('classroom', ClassroomController::class);
+
+

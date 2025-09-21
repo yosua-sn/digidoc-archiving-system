@@ -18,14 +18,4 @@ class Classroom extends Model
         'code',
         'created_by'
     ];
-
-    public function teacher(): BelongsTo {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function students(): BelongsToMany {
-        return $this->belongsToMany(User::class, 'classroom_student', 'classroom_id', 'student_id')
-            ->withTimestamps();
-    }
-
 }
